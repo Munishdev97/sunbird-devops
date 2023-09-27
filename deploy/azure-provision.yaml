@@ -21,12 +21,15 @@
     tenant_id: "7c43de2a-1233-483d-b42c-d2ff8366b51d"
     subscription_id: "30d7688a-2832-423f-a4a8-d9aa7e1cea83"
     ssh_public_key_file_location: /home/muniyasamy/deployer.pub
+    
     ############### Maxmind licence key ###########################
     # To create license key
     # Goto: https://www.maxmind.com/en/accounts/current/license-key
     # Click: Generate a new license key.
     # ##############################################################
-    geoip_licence_key: ""
+
+    geoip_licence_key: "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"
+    
     # ##############################################################
     # OPTIONAL
     # ##############################################################

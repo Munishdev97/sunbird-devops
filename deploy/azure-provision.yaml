@@ -10,7 +10,7 @@
 ---
 - hosts: localhost
   connection: local
-  gather_facts: false
+  # gather_facts: false
   vars:
     # ##############################################################
     # MANDATORY TO CHANGE

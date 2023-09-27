@@ -18,6 +18,7 @@
     version: "3.9"
     sp_client_id: "cff8cde7-f69f-4cc1-851a-90884cf57747"
     sp_client_secret: "-Kl8Q~ZOI0nBhH8aiLNhKNAFlvcg6Kqz3RS5jbPi"
+    tenant_id: "7c43de2a-1233-483d-b42c-d2ff8366b51d"
     ssh_public_key_file_location: /home/muniyasamy/deployer.pub
     ############### Maxmind licence key ###########################
     # To create license key
@@ -54,6 +55,13 @@
     public_containers:
       - contents
       - public
+  tasks:
+  - name: Login to Azure
+    azure_rm_login:
+      client_id: "{{ sp_client_id }}"
+      client_secret: "{{ sp_client_secret }}"
+      tenant_id: "{{ tenant_id }}"
+
   tasks:
     - name: Creating resource group - {{ rg_name }}
       azure_rm_resourcegroup:

@@ -55,7 +55,7 @@
       - contents
       - public
   tasks:
-    - name: Creating resource group #- "{{ rg_name }}"
+    - name: Creating resource group - {{ rg_name }}
       azure_rm_resourcegroup:
         name: "{{ rg_name }}"
         location: "{{ location }}"

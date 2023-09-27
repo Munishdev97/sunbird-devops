@@ -20,8 +20,9 @@
     sp_client_secret: "-Kl8Q~ZOI0nBhH8aiLNhKNAFlvcg6Kqz3RS5jbPi"
     tenant_id: "7c43de2a-1233-483d-b42c-d2ff8366b51d"
     subscription_id: "30d7688a-2832-423f-a4a8-d9aa7e1cea83"
+    managed_identity_resource_id: "cdc2f0c4-a1e5-47be-ba8e-e038ab848264"
     ssh_public_key_file_location: /home/muniyasamy/deployer.pub
-    
+
     ############### Maxmind licence key ###########################
     # To create license key
     # Goto: https://www.maxmind.com/en/accounts/current/license-key
@@ -66,6 +67,12 @@
   #     secret: "{{ sp_client_secret }}"
   #     tenant: "{{ tenant_id }}"
   #     subscription_id: "{{subscription_id}}"
+
+  tasks:
+  - name: Authenticate to Azure using a managed identity
+    azure_rm_authentication:
+      subscription_id: "{{ subscription_id }}"
+      managed_identity_resource_id: "{{ managed_identity_resource_id }}"
 
   tasks:
     - name: Creating resource group - {{ rg_name }}

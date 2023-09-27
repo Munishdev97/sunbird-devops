@@ -56,13 +56,13 @@
     public_containers:
       - contents
       - public
-  tasks:
-  - name: Login to Azure
-    azure_rm_login:
-      client_id: "{{ sp_client_id }}"
-      secret: "{{ sp_client_secret }}"
-      tenant: "{{ tenant_id }}"
-      subscription_id: "{{subscription_id}}"
+  # tasks:
+  # - name: Login to Azure
+  #   azure_rm_login:
+  #     client_id: "{{ sp_client_id }}"
+  #     secret: "{{ sp_client_secret }}"
+  #     tenant: "{{ tenant_id }}"
+  #     subscription_id: "{{subscription_id}}"
 
   tasks:
     - name: Creating resource group - {{ rg_name }}

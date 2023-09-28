@@ -46,7 +46,7 @@
     vm_size: Standard_D4s_v4
     # To get correct verions, run
     # az aks get-versions -l centralindia -o table
-    aks_version: 1.19.9
+    aks_version: 1.26.6
     private_containers:
       - private
       - artifacts

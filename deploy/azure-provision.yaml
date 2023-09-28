@@ -61,6 +61,7 @@
   tasks:
     - name: Creating resource group - {{ rg_name }}
       azure_rm_resourcegroup:
+        state: absent
         name: "{{ rg_name }}"
         location: "{{ location }}"
       register: rg
@@ -68,6 +69,7 @@
         var: rg
     - name: Create virtual network
       azure_rm_virtualnetwork:
+        state: absent
         resource_group: "{{ rg_name }}"
         name: "{{ vnet_name }}"
         address_prefixes: "10.0.0.0/16"
@@ -75,6 +77,7 @@
         - network
     - name: Add subnet
       azure_rm_subnet:
+        state: absent
         resource_group: "{{ rg_name }}"
         name: "{{ subnet_name }}"
         address_prefix: "10.0.1.0/24"
@@ -87,6 +90,7 @@
         - info
     - name: Creating public ip for jenkins
       azure_rm_publicipaddress:
+        state: absent
         resource_group: "{{ rg_name }}"
         name: jenkins-ip
         allocation_method: static
@@ -96,6 +100,7 @@
         - info
     - name: Creating Nics
       azure_rm_networkinterface:
+        state: absent
         name: "{{ item }}"
         resource_group: "{{ rg_name }}"
         virtual_network: "{{ vnet_name }}"
@@ -105,6 +110,7 @@
         - network
     - name: Assinging public ip for jenkins
       azure_rm_networkinterface:
+        state: absent
         name: jenkins
         resource_group: "{{ rg_name }}"
         virtual_network: "{{ vnet_name }}"
@@ -114,6 +120,7 @@
         - network
     - name: Creating vm {{ name }}
       azure_rm_virtualmachine:
+        state: absent
         resource_group: "{{ rg_name }}"
         name: "{{ item }}"
         vm_size: "{{ vm_size }}"
@@ -142,6 +149,7 @@
     # az aks get-credentials --resource-group sunbird-installation-test-3.9 --name sb-installation-3-9
     - name: Create a managed Azure Container Services (AKS) cluster
       azure_rm_aks:
+        state: absent
         name: "{{ storage_account_name }}"
         location: "{{ location }}"
         resource_group: "{{ rg_name }}"

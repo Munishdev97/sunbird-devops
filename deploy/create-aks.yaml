@@ -11,40 +11,75 @@
     storage_account_name: "sbinstallation{{ version | regex_replace('\\.|-', '') }}"
     vm_size: Standard_D4s_v4
     aks_version: 1.26.6
+  # tasks:
+  #   - name: Create a managed Azure Container Services (AKS) cluster
+  #     azure_rm_aks:
+  #       name: "{{ storage_account_name }}"
+  #       location: "{{ location }}"
+  #       resource_group: "{{ rg_name }}"
+  #       dns_prefix: "sunbird-aks"
+  #       kubernetes_version: "{{aks_version}}"
+  #       linux_profile:
+  #         admin_username: "deployer"
+  #         ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
+  #       service_principal:
+  #         client_id: "{{ sp_client_id }}"
+  #         client_secret: "{{ sp_client_secret }}"
+  #       network_profile:
+  #         network_plugin: kubenet
+  #         pod_cidr: 192.168.0.0/16
+  #         docker_bridge_cidr: 172.17.0.1/16
+  #         dns_service_ip: 10.233.0.10
+  #         service_cidr: 10.233.0.0/16
+  #       agent_pool_profiles:
+  #         - name: my-system-nodepool
+  #           mode: System
+  #           count: 1
+  #           vm_size: Standard_D4s_v4
+  #           type: VirtualMachineScaleSets
+  #           vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
+  #         - name: my-user-nodepool
+  #           mode: User
+  #           count: 4
+  #           vm_size: Standard_D4s_v4
+  #           type: VirtualMachineScaleSets
+  #           vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
+  #       tags:
+  #         Environment: installation
+  #     tags:
+  #       - k8s
   tasks:
-    - name: Create a managed Azure Container Services (AKS) cluster
-      azure_rm_aks:
-        name: "{{ storage_account_name }}"
-        location: "{{ location }}"
-        resource_group: "{{ rg_name }}"
-        dns_prefix: "sunbird-aks"
-        kubernetes_version: "{{aks_version}}"
-        linux_profile:
-          admin_username: "deployer"
-          ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
-        service_principal:
-          client_id: "{{ sp_client_id }}"
-          client_secret: "{{ sp_client_secret }}"
-        network_profile:
-          network_plugin: kubenet
-          pod_cidr: 192.168.0.0/16
-          docker_bridge_cidr: 172.17.0.1/16
-          dns_service_ip: 10.233.0.10
-          service_cidr: 10.233.0.0/16
-        agent_pool_profiles:
-          - name: my-system-nodepool
-            mode: System
-            count: 1
-            vm_size: Standard_D4s_v4
-            type: VirtualMachineScaleSets
-            vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
-          - name: my-user-nodepool
-            mode: User
-            count: 4
-            vm_size: Standard_D4s_v4
-            type: VirtualMachineScaleSets
-            vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
-        tags:
-          Environment: installation
+  - name: Create a managed Azure Container Services (AKS) cluster
+    azure_rm_aks:
+      name: "{{ storage_account_name }}"
+      location: "{{ location }}"
+      resource_group: "{{ rg_name }}"
+      kubernetes_version: "{{aks_version}}"
+      linux_profile:
+        admin_username: "deployer"
+        ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
+      service_principal:
+        client_id: "{{ sp_client_id }}"
+        client_secret: "{{ sp_client_secret }}"
+      network_profile:
+        network_plugin: kubenet
+        pod_cidr: 192.168.0.0/16
+        docker_bridge_cidr: 172.17.0.1/16
+        dns_service_ip: 10.233.0.10
+        service_cidr: 10.233.0.0/16
+      agent_pool_profiles:
+      - name: my-system-pool
+        mode: system
+        count: 1
+        vm_size: Standard_D4s_v4
+        type: VirtualMachineScaleSets
+        vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
+      - name: my-user-pool
+        mode: User
+        count: 4
+        vm_size: Standard_D4s_v4
+        type: VirtualMachineScaleSets
+        vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
       tags:
-        - k8s
+        Environment: installation
+        k8s

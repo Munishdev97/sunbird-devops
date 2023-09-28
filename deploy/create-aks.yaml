@@ -50,7 +50,7 @@
   #       - k8s
   tasks:  
   - name: Create AKS cluster with vnet
-    azure_rm_aks:
+    azure_rm_container_service_agent_pool_profile:
         resource_group: "{{ rg_name }}"
         name: "{{ storage_account_name }}"
         dns_prefix: "demoaks"

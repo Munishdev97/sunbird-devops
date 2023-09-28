@@ -54,6 +54,11 @@
         resource_group: "{{ rg_name }}"
         name: "{{ storage_account_name }}"
         dns_prefix: "{{ storage_account_name }}"
+        ports:
+        - port: 80
+        storage_profiles:
+        - os_disk:
+          size_in_gb: 100
         kubernetes_version: "{{aks_version}}"
         agent_pool_profiles:
           - count: 2

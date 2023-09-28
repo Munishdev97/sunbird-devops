@@ -330,8 +330,7 @@
         tags:
           Environment: installation
     - name: Get instance of Registry
-      azure_rm_containerregistry_info:
-        state: present
+      azure_rm_containerregistry_info :
         resource_group: "{{ rg_name }}"
         retrieve_credentials: true
         name: "sbinstallation40"
@@ -340,7 +339,6 @@
         - info
     - name: Get facts for storage account
       azure_rm_storageaccount_info:
-        state: present
         resource_group: "{{ rg_name }}"
         name: "{{ storage_account_name }}"
         show_connection_string: yes
@@ -349,7 +347,6 @@
         - info
     - name: Get instance ips
       azure_rm_networkinterface_info:
-        state: present
         resource_group: "{{ rg_name }}"
         name: "{{ item }}"
       with_items: "{{vm_names}}"

@@ -17,6 +17,7 @@
         name: "{{ storage_account_name }}"
         location: "{{ location }}"
         resource_group: "{{ rg_name }}"
+        dns_prefix: "sunbird-aks"
         kubernetes_version: "{{aks_version}}"
         linux_profile:
           admin_username: "deployer"

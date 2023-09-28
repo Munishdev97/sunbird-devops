@@ -10,7 +10,6 @@
     azure_rm_aks:
         resource_group: "sunbird-rg"
         name: "demoaks"
-        dns_prefix: "demoaks"
         kubernetes_version: "1.26.6"
         agent_pool_profiles:
           - count: 2

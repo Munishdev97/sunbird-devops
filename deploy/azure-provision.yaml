@@ -62,6 +62,7 @@
     - name: Creating resource group - {{ rg_name }}
       azure_rm_resourcegroup:
         state: absent
+        force_delete_nonempty: yes
         name: "{{ rg_name }}"
         location: "{{ location }}"
       register: rg

@@ -316,10 +316,13 @@
             - plugins
       tags:
         - storage
+###########################################################################
+# Provide Unique name for container registry
+###########################################################################        
     - name: Creating containier registry
       azure_rm_containerregistry:
         state: present
-        name: "{{ storage_account_name }}"
+        name: "sbinstallation40"
         location: "{{ location }}"
         resource_group: "{{ rg_name }}"
         admin_user_enabled: true
@@ -331,7 +334,7 @@
         state: present
         resource_group: "{{ rg_name }}"
         retrieve_credentials: true
-        name: "{{ storage_account_name }}"
+        name: "sbinstallation40"
       register: registry
       tags:
         - info

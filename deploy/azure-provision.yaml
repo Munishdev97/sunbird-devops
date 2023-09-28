@@ -188,7 +188,7 @@
       block:
         - name: Creating storage account
           azure_rm_storageaccount:
-          state: present
+            state: present
             resource_group: "{{ rg_name }}"
             # names should only have alphanumerics
             name: "{{ storage_account_name }}"

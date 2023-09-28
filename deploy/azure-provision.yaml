@@ -46,7 +46,7 @@
     vm_size: Standard_D4s_v4
     # To get correct verions, run
     # az aks get-versions -l centralindia -o table
-    aks_version: 1.26.6
+    aks_version: 1.19.9
     private_containers:
       - private
       - artifacts
@@ -146,7 +146,7 @@
         location: "{{ location }}"
         resource_group: "{{ rg_name }}"
         kubernetes_version: "{{aks_version}}"
-        # dns_prefix:  "{{ storage_account_name }}"
+        dns_prefix:  "{{ storage_account_name }}"
         linux_profile:
           admin_username: "deployer"
           ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
@@ -161,7 +161,7 @@
           service_cidr: 10.233.0.0/16
         agent_pool_profiles:
           - name: my-system-nodepool
-            mode: system
+            mode: System
             count: 1
             vm_size: Standard_D4s_v4
             type: VirtualMachineScaleSets

@@ -82,4 +82,5 @@
         vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
       tags:
         Environment: installation
-        k8s
+    tags:  
+      - k8s

@@ -146,7 +146,7 @@
         location: "{{ location }}"
         resource_group: "{{ rg_name }}"
         kubernetes_version: "{{aks_version}}"
-        dns_prefix:  "{{ storage_account_name }}"
+        # dns_prefix:  "{{ storage_account_name }}"
         linux_profile:
           admin_username: "deployer"
           ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"

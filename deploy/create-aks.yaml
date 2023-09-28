@@ -48,27 +48,28 @@
   #         Environment: installation
   #     tags:
   #       - k8s
-- name: Create AKS cluster with vnet
-  azure_rm_aks:
-      resource_group: "{{ rg_name }}"
-      name: "{{ storage_account_name }}"
-      dns_prefix: "{{ storage_account_name }}"
-      kubernetes_version: "{{aks_version}}"
-      agent_pool_profiles:
-        - count: 2
-          name: nodepool1
-          vm_size: Standard_B2s
-          vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
-      linux_profile:
-          admin_username: azureuser
-          ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
-      service_principal:
-          client_id: "{{ sp_client_id }}"
-          client_secret: "{{ sp_client_secret }}"
-      network_profile:
-          network_plugin: kubenet
-          pod_cidr: 192.168.0.0/16
-          docker_bridge_cidr: 172.17.0.1/16
-          dns_service_ip: 10.0.0.10
-          service_cidr: 10.0.0.0/16
-  register: aks
+  tasks:  
+  - name: Create AKS cluster with vnet
+    azure_rm_aks:
+        resource_group: "{{ rg_name }}"
+        name: "{{ storage_account_name }}"
+        dns_prefix: "{{ storage_account_name }}"
+        kubernetes_version: "{{aks_version}}"
+        agent_pool_profiles:
+          - count: 2
+            name: nodepool1
+            vm_size: Standard_B2s
+            vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
+        linux_profile:
+            admin_username: azureuser
+            ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
+        service_principal:
+            client_id: "{{ sp_client_id }}"
+            client_secret: "{{ sp_client_secret }}"
+        network_profile:
+            network_plugin: kubenet
+            pod_cidr: 192.168.0.0/16
+            docker_bridge_cidr: 172.17.0.1/16
+            dns_service_ip: 10.0.0.10
+            service_cidr: 10.0.0.0/16
+    register: aks

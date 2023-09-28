@@ -288,13 +288,13 @@
             - tar.gz
         - name: Uploading labels
           azure_rm_storageblob:
-            state: present
             resource_group: "{{ rg_name }}"
             storage_account_name: "{{ storage_account_name }}"
             container: label
             batch_upload_dst: "labels/"
             batch_upload_src: "../utils/portal/labels/"
             state: present
+            force: yes
         - name: Unarchive plugins
           unarchive:
             src: "https://sunbirdpublic.blob.core.windows.net/installation/content-plugins.zip"
@@ -305,13 +305,13 @@
             - plugins
         - name: Uploading plugins
           azure_rm_storageblob:
-            state: present
             resource_group: "{{ rg_name }}"
             storage_account_name: "{{ storage_account_name }}"
             container: contents
             batch_upload_dst: "content-plugins/"
             batch_upload_src: "/tmp/content-plugins/"
             state: present
+            force: yes
           tags:
             - plugins
       tags:

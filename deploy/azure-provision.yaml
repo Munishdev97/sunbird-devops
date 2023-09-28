@@ -160,13 +160,13 @@
           dns_service_ip: 10.233.0.10
           service_cidr: 10.233.0.0/16
         agent_pool_profiles:
-          - name: my-system-pool
+          - name: my-system-nodepool
             mode: system
             count: 1
             vm_size: Standard_D4s_v4
             type: VirtualMachineScaleSets
             vnet_subnet_id: "{{ subnet.state.id }}"
-          - name: my-system-pool
+          - name: my-user-nodepool
             mode: User
             count: 4
             vm_size: Standard_D4s_v4

@@ -1,0 +1,51 @@
+- hosts: localhost
+  connection: local
+  vars:
+    version: "3.9"
+    sp_client_id: "cff8cde7-f69f-4cc1-851a-90884cf57747"
+    sp_client_secret: "-Kl8Q~ZOI0nBhH8aiLNhKNAFlvcg6Kqz3RS5jbPi"
+    ssh_public_key_file_location: /home/muniyasamy/deployer.pub
+    geoip_licence_key: "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"
+    rg_name: "sunbird-installation-test-{{ version }}"
+    location: centralindia
+    vnet_name: "installation-test-{{ version }}"
+    subnet_name: "installation-test-subnet-{{ version }}"
+    storage_account_name: "sbinstallation{{ version | regex_replace('\\.|-', '') }}"
+    vm_size: Standard_D4s_v4
+    aks_version: 1.26.6
+  tasks:
+    - name: Create a managed Azure Container Services (AKS) cluster
+      azure_rm_aks:
+        name: "{{ storage_account_name }}"
+        location: "{{ location }}"
+        resource_group: "{{ rg_name }}"
+        kubernetes_version: "{{aks_version}}"
+        linux_profile:
+          admin_username: "deployer"
+          ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
+        service_principal:
+          client_id: "{{ sp_client_id }}"
+          client_secret: "{{ sp_client_secret }}"
+        network_profile:
+          network_plugin: kubenet
+          pod_cidr: 192.168.0.0/16
+          docker_bridge_cidr: 172.17.0.1/16
+          dns_service_ip: 10.233.0.10
+          service_cidr: 10.233.0.0/16
+        agent_pool_profiles:
+          - name: my-system-nodepool
+            mode: System
+            count: 1
+            vm_size: Standard_D4s_v4
+            type: VirtualMachineScaleSets
+            vnet_subnet_id: "{{ subnet.state.id }}"
+          - name: my-user-nodepool
+            mode: User
+            count: 4
+            vm_size: Standard_D4s_v4
+            type: VirtualMachineScaleSets
+            vnet_subnet_id: "{{ subnet.state.id }}"
+        tags:
+          Environment: installation
+      tags:
+        - k8s

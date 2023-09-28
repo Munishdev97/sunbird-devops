@@ -7,7 +7,7 @@
     ssh_public_key_file_location: /home/muniyasamy/deployer.pub
   tasks:  
   - name: Create AKS cluster with vnet
-    azure_rm_container_service_agent_pool_profile:
+    azure_rm_aks:
         resource_group: "sunbird-rg"
         name: "demoaks"
         dns_prefix: "demoaks"

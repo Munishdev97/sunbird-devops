@@ -131,7 +131,6 @@
         managed_disk_type: Standard_LRS
         os_disk_size_gb: 250
         network_interfaces: "{{ item }}"
-        state: absent
         allocated: "{{ allocate | d(true) }}"
         ssh_public_keys:
           - path: /home/deployer/.ssh/authorized_keys

@@ -89,6 +89,19 @@
         - network
         - k8s
         - info
+    - name: Add subnet
+      azure_rm_subnet:
+        state: present
+        resource_group: "{{ rg_name }}"
+        name: "{{ subnet_name }}-k8s"
+        address_prefix: "10.0.1.0/24"
+        virtual_network: "{{ vnet_name }}"
+      register: subnet
+      tags:
+        - always
+        - network
+        - k8s
+        - info
     - name: Creating public ip for jenkins
       azure_rm_publicipaddress:
         state: present

@@ -81,7 +81,7 @@
       azure_rm_subnet:
         state: present
         resource_group: "{{ rg_name }}"
-        name: "{{ subnet_name }}"
+        name: "{{ k8s_subnet_name }}"
         address_prefix: "10.0.0.0/22"
         virtual_network: "{{ vnet_name }}"
       register: subnet
@@ -94,7 +94,7 @@
       azure_rm_subnet:
         state: present
         resource_group: "{{ rg_name }}"
-        name: "{{ k8s_subnet_name }}"
+        name: "{{ subnet_name }}"
         address_prefix: "10.0.4.0/22"
         virtual_network: "{{ vnet_name }}"
       register: subnet

@@ -94,7 +94,7 @@
         state: present
         resource_group: "{{ rg_name }}"
         name: "{{ subnet_name }}-k8s"
-        address_prefix: "10.0.1.0/24"
+        address_prefix: "10.1.0.0/22"
         virtual_network: "{{ vnet_name }}"
       register: subnet
       tags:

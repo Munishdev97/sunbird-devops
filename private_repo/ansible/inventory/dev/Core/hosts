@@ -147,7 +147,7 @@ graylog
 log-es
 cassandra
 postgresql-master
-postgresql-slave
+# postgresql-slave
 kafka
 keycloak
 composite-search-cluster

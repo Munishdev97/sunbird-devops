@@ -16,8 +16,8 @@
     # MANDATORY TO CHANGE
     # ##############################################################
     version: "3.9"
-    sp_client_id: "cff8cde7-f69f-4cc1-851a-90884cf57747"
-    sp_client_secret: "-Kl8Q~ZOI0nBhH8aiLNhKNAFlvcg6Kqz3RS5jbPi"
+    sp_client_id: "d83d707a-dc18-4f5e-bcc7-17f0d74ff75b"
+    sp_client_secret: "ca.8Q~VaLPflqUTwGb0W56uab6BF5lLJ0W1SLaOf"
     ssh_public_key_file_location: /home/muniyasamy/deployer.pub
 
     ############### Maxmind licence key ###########################
@@ -335,7 +335,7 @@
     - name: Creating containier registry
       azure_rm_containerregistry:
         state: present
-        name: "sbinstallation40"
+        name: "sbinstallation41"
         location: "{{ location }}"
         resource_group: "{{ rg_name }}"
         admin_user_enabled: true

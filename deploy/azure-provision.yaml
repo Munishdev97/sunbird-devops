@@ -16,8 +16,8 @@
     # MANDATORY TO CHANGE
     # ##############################################################
     version: "3.9"
-    sp_client_id: ""
-    sp_client_secret: ""
+    sp_client_id: "d83d707a-dc18-4f5e-bcc7-17f0d74ff75b"
+    sp_client_secret: "ca.8Q~VaLPflqUTwGb0W56uab6BF5lLJ0W1SLaOf"
     ssh_public_key_file_location: /home/rajesh_r/deployer.pub
     ############### Maxmind licence key ###########################
     # To create license key
@@ -136,35 +136,35 @@
         - vm
     # Note: to download the aks kubeconfig
     # az aks get-credentials --resource-group sunbird-installation-test-3.9 --name sb-installation-3-9
-    - name: Create a managed Azure Container Services (AKS) cluster
-      azure_rm_aks:
-        name: "{{ storage_account_name }}"
-        location: "{{ location }}"
-        resource_group: "{{ rg_name }}"
-        kubernetes_version: "{{aks_version}}"
-        dns_prefix:  "{{ storage_account_name }}"
-        linux_profile:
-          admin_username: "deployer"
-          ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
-        service_principal:
-          client_id: "{{ sp_client_id }}"
-          client_secret: "{{ sp_client_secret }}"
-        network_profile:
-          network_plugin: kubenet
-          pod_cidr: 192.168.0.0/16
-          docker_bridge_cidr: 172.17.0.1/16
-          dns_service_ip: 10.233.0.10
-          service_cidr: 10.233.0.0/16
-        agent_pool_profiles:
-          - name: default
-            count: 4
-            vm_size: Standard_D4s_v4
-            type: VirtualMachineScaleSets
-            vnet_subnet_id: "{{ subnet.state.id }}"
-        tags:
-          Environment: installation
-      tags:
-        - k8s
+    # - name: Create a managed Azure Container Services (AKS) cluster
+    #   azure_rm_aks:
+    #     name: "{{ storage_account_name }}"
+    #     location: "{{ location }}"
+    #     resource_group: "{{ rg_name }}"
+    #     kubernetes_version: "{{aks_version}}"
+    #     dns_prefix:  "{{ storage_account_name }}"
+    #     linux_profile:
+    #       admin_username: "deployer"
+    #       ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
+    #     service_principal:
+    #       client_id: "{{ sp_client_id }}"
+    #       client_secret: "{{ sp_client_secret }}"
+    #     network_profile:
+    #       network_plugin: kubenet
+    #       pod_cidr: 192.168.0.0/16
+    #       docker_bridge_cidr: 172.17.0.1/16
+    #       dns_service_ip: 10.233.0.10
+    #       service_cidr: 10.233.0.0/16
+    #     agent_pool_profiles:
+    #       - name: default
+    #         count: 4
+    #         vm_size: Standard_D4s_v4
+    #         type: VirtualMachineScaleSets
+    #         vnet_subnet_id: "{{ subnet.state.id }}"
+    #     tags:
+    #       Environment: installation
+    #   tags:
+    #     - k8s
     - name: create an account with blob CORS
       block:
         - name: Creating storage account
@@ -291,7 +291,7 @@
         - storage
     - name: Creating containier registry
       azure_rm_containerregistry:
-        name: "{{ storage_account_name }}"
+        name: "sbinstallation41"
         location: "{{ location }}"
         resource_group: "{{ rg_name }}"
         admin_user_enabled: true

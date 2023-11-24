@@ -1,6 +1,6 @@
 {{- if .Values.rbac.pspEnabled }}
 apiVersion: policy/v1
-kind: PodSecurityAdmission
+kind: PodSecurityPolicy
 metadata:
   name: {{ template "prometheus-redis-exporter.fullname" . }}
   labels:

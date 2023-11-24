@@ -1,6 +1,6 @@
 {{- if and .Values.prometheusOperator.enabled .Values.global.rbac.create .Values.global.rbac.pspEnabled }}
 apiVersion: policy/v1
-kind: PodSecurityPolicy
+kind: PodSecurityAdmission
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
   namespace: {{ $.Release.Namespace }}

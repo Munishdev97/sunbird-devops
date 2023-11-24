@@ -1,6 +1,6 @@
 {{- if and .Values.prometheusOperator.admissionWebhooks.enabled .Values.prometheusOperator.admissionWebhooks.patch.enabled .Values.global.rbac.create .Values.global.rbac.pspEnabled }}
 apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
+kind: SecurityAdmissionController
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-admission
   namespace: {{ $.Release.Namespace }}

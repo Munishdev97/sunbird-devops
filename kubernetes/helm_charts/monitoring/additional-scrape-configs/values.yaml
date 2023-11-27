@@ -27,7 +27,15 @@ fullnameOverride: "sunbird-monitoring"
 #       - 10.10.10.2
 #       - 10.10.10.3
 #       - 10.10.10.4
-services: {}
+services:
+  cassandra:
+    port: 9042
+    address:
+      - 10.0.6.7
+  # neo4j:
+  #   port: 7474
+  #   address:
+  #     - 10.10.10.1
 
 namespace: "default"
 

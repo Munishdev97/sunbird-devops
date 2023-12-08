@@ -1,0 +1,46 @@
+- hosts: localhost
+  connection: local
+  vars:
+    version: "3.9"
+    sp_client_id: "cff8cde7-f69f-4cc1-851a-90884cf57747"
+    sp_client_secret: "-Kl8Q~ZOI0nBhH8aiLNhKNAFlvcg6Kqz3RS5jbPi"
+    ssh_public_key_file_location: /home/muniyasamy/deployer.pub
+  tasks:  
+  - name: Create AKS cluster with vnet
+    azure_rm_aks:
+        name: demoaks
+        resource_group: sunbird-rg
+        dns_prefix: demoaks
+        location: centralindia
+        kubernetes_version: 1.26.6
+        linux_profile:
+            admin_username: azureuser
+            ssh_key: "/home/muniyasamy/deployer.pub"
+        service_principal:
+            client_id: "cff8cde7-f69f-4cc1-851a-90884cf57747"
+            client_secret: "-Kl8Q~ZOI0nBhH8aiLNhKNAFlvcg6Kqz3RS5jbPi"
+        agent_pool_profiles:
+          - name: system-nodepool
+            count: 1
+            mode: System
+            vm_size: Standard_B2s
+            type: VirtualMachineScaleSets
+            min_count: 1
+            max_count: 1
+            vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
+          - count: 1
+            mode: User
+            name: user-nodepool
+            vm_size: Standard_B2s
+            type: VirtualMachineScaleSets
+            min_count: 1
+            max_count: 2
+            vnet_subnet_id: "/subscriptions/e309fae4-e77e-4d22-bcd9-cf63824dd273/resourceGroups/sunbird-installation-test-3.9/providers/Microsoft.Network/virtualNetworks/installation-test-3.9/subnets/installation-test-subnet-3.9"
+        network_profile:
+            network_plugin: kubenet
+            pod_cidr: 192.168.0.0/16
+            docker_bridge_cidr: 172.17.0.1/16
+            dns_service_ip: 10.0.0.10
+            service_cidr: 10.0.0.0/16
+        state: present
+    register: aks

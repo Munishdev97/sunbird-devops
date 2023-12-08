@@ -10,21 +10,24 @@
 ---
 - hosts: localhost
   connection: local
-  gather_facts: false
+  # gather_facts: false
   vars:
     # ##############################################################
     # MANDATORY TO CHANGE
     # ##############################################################
     version: "3.9"
-    sp_client_id: ""
-    sp_client_secret: ""
-    ssh_public_key_file_location: /home/rajesh_r/deployer.pub
+    sp_client_id: "d83d707a-dc18-4f5e-bcc7-17f0d74ff75b"
+    sp_client_secret: "ca.8Q~VaLPflqUTwGb0W56uab6BF5lLJ0W1SLaOf"
+    ssh_public_key_file_location: /home/muniyasamy/deployer.pub
+
     ############### Maxmind licence key ###########################
     # To create license key
     # Goto: https://www.maxmind.com/en/accounts/current/license-key
     # Click: Generate a new license key.
     # ##############################################################
+
     geoip_licence_key: ""
+    
     # ##############################################################
     # OPTIONAL
     # ##############################################################
@@ -32,6 +35,7 @@
     location: centralindia
     vnet_name: "installation-test-{{ version }}"
     subnet_name: "installation-test-subnet-{{ version }}"
+    k8s_subnet_name: "installation-k8s-subnet-{{ version }}"
     storage_account_name: "sbinstallation{{ version | regex_replace('\\.|-', '') }}"
     vm_names:
       - jenkins
@@ -43,7 +47,7 @@
     vm_size: Standard_D4s_v4
     # To get correct verions, run
     # az aks get-versions -l centralindia -o table
-    aks_version: 1.20.7
+    aks_version: 1.26.6
     private_containers:
       - private
       - artifacts
@@ -54,9 +58,12 @@
     public_containers:
       - contents
       - public
+
   tasks:
-    - name: Creating resource group - "{{ rg_name }}"
+    - name: Creating resource group - {{ rg_name }}
       azure_rm_resourcegroup:
+        state: present
+        force_delete_nonempty: yes
         name: "{{ rg_name }}"
         location: "{{ location }}"
       register: rg
@@ -64,16 +71,31 @@
         var: rg
     - name: Create virtual network
       azure_rm_virtualnetwork:
+        state: present
         resource_group: "{{ rg_name }}"
         name: "{{ vnet_name }}"
         address_prefixes: "10.0.0.0/16"
       tags:
         - network
-    - name: Add subnet
+    - name: Add subnet 1
       azure_rm_subnet:
+        state: present
+        resource_group: "{{ rg_name }}"
+        name: "{{ k8s_subnet_name }}"
+        address_prefix: "10.0.0.0/22"
+        virtual_network: "{{ vnet_name }}"
+      register: subnet
+      tags:
+        - always
+        - network
+        - k8s
+        - info
+    - name: Add subnet 2
+      azure_rm_subnet:
+        state: present
         resource_group: "{{ rg_name }}"
         name: "{{ subnet_name }}"
-        address_prefix: "10.0.1.0/24"
+        address_prefix: "10.0.5.0/24"
         virtual_network: "{{ vnet_name }}"
       register: subnet
       tags:
@@ -83,6 +105,7 @@
         - info
     - name: Creating public ip for jenkins
       azure_rm_publicipaddress:
+        state: present
         resource_group: "{{ rg_name }}"
         name: jenkins-ip
         allocation_method: static
@@ -92,6 +115,7 @@
         - info
     - name: Creating Nics
       azure_rm_networkinterface:
+        state: present
         name: "{{ item }}"
         resource_group: "{{ rg_name }}"
         virtual_network: "{{ vnet_name }}"
@@ -101,6 +125,7 @@
         - network
     - name: Assinging public ip for jenkins
       azure_rm_networkinterface:
+        state: present
         name: jenkins
         resource_group: "{{ rg_name }}"
         virtual_network: "{{ vnet_name }}"
@@ -110,6 +135,7 @@
         - network
     - name: Creating vm {{ name }}
       azure_rm_virtualmachine:
+        state: present
         resource_group: "{{ rg_name }}"
         name: "{{ item }}"
         vm_size: "{{ vm_size }}"
@@ -119,7 +145,6 @@
         managed_disk_type: Standard_LRS
         os_disk_size_gb: 250
         network_interfaces: "{{ item }}"
-        state: present
         allocated: "{{ allocate | d(true) }}"
         ssh_public_keys:
           - path: /home/deployer/.ssh/authorized_keys
@@ -136,39 +161,47 @@
         - vm
     # Note: to download the aks kubeconfig
     # az aks get-credentials --resource-group sunbird-installation-test-3.9 --name sb-installation-3-9
-    - name: Create a managed Azure Container Services (AKS) cluster
-      azure_rm_aks:
-        name: "{{ storage_account_name }}"
-        location: "{{ location }}"
-        resource_group: "{{ rg_name }}"
-        kubernetes_version: "{{aks_version}}"
-        dns_prefix:  "{{ storage_account_name }}"
-        linux_profile:
-          admin_username: "deployer"
-          ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
-        service_principal:
-          client_id: "{{ sp_client_id }}"
-          client_secret: "{{ sp_client_secret }}"
-        network_profile:
-          network_plugin: kubenet
-          pod_cidr: 192.168.0.0/16
-          docker_bridge_cidr: 172.17.0.1/16
-          dns_service_ip: 10.233.0.10
-          service_cidr: 10.233.0.0/16
-        agent_pool_profiles:
-          - name: default
-            count: 4
-            vm_size: Standard_D4s_v4
-            type: VirtualMachineScaleSets
-            vnet_subnet_id: "{{ subnet.state.id }}"
-        tags:
-          Environment: installation
-      tags:
-        - k8s
+    # - name: Create a managed Azure Container Services (AKS) cluster
+    #   azure_rm_aks:
+    #     state: present
+    #     name: "{{ storage_account_name }}"
+    #     location: "{{ location }}"
+    #     resource_group: "{{ rg_name }}"
+    #     kubernetes_version: "{{aks_version}}"
+    #     linux_profile:
+    #       admin_username: "deployer"
+    #       ssh_key: "{{  lookup('file', ssh_public_key_file_location)  }}"
+    #     service_principal:
+    #       client_id: "{{ sp_client_id }}"
+    #       client_secret: "{{ sp_client_secret }}"
+    #     network_profile:
+    #       network_plugin: kubenet
+    #       pod_cidr: 192.168.0.0/16
+    #       docker_bridge_cidr: 172.17.0.1/16
+    #       dns_service_ip: 10.233.0.10
+    #       service_cidr: 10.233.0.0/16
+    #     agent_pool_profiles:
+    #       - name: my-system-nodepool
+    #         mode: System
+    #         count: 1
+    #         vm_size: Standard_D4s_v4
+    #         type: VirtualMachineScaleSets
+    #         vnet_subnet_id: "{{ subnet.state.id }}"
+    #       - name: my-user-nodepool
+    #         mode: User
+    #         count: 4
+    #         vm_size: Standard_D4s_v4
+    #         type: VirtualMachineScaleSets
+    #         vnet_subnet_id: "{{ subnet.state.id }}"
+    #     tags:
+    #       Environment: installation
+    #   tags:
+    #     - k8s
     - name: create an account with blob CORS
       block:
         - name: Creating storage account
           azure_rm_storageaccount:
+            state: present
             resource_group: "{{ rg_name }}"
             # names should only have alphanumerics
             name: "{{ storage_account_name }}"
@@ -199,12 +232,14 @@
           until: result is not failed
         - name: Create private containers
           azure_rm_storageblob:
+            state: present
             resource_group: "{{ rg_name }}"
             storage_account_name: "{{ storage_account_name }}"
             container: "{{ item }}"
           with_items: "{{ private_containers }}"
         - name: Create public containers
           azure_rm_storageblob:
+            state: present
             resource_group: "{{ rg_name }}"
             storage_account_name: "{{ storage_account_name }}"
             container: "{{ item }}"
@@ -216,6 +251,7 @@
             state: touch
         - name: Creating folder structurue in blob
           azure_rm_storageblob:
+            state: present
             resource_group: "{{ rg_name }}"
             storage_account_name: "{{ storage_account_name }}"
             container: contents
@@ -236,6 +272,7 @@
             mode: '0440'
         - name: Uploading T&C
           azure_rm_storageblob:
+            state: present
             resource_group: "{{ rg_name }}"
             storage_account_name: "{{ storage_account_name }}"
             container: contents
@@ -253,6 +290,7 @@
             - {type: 'GeoLite2-City', prefix: 'tar.gz'}
         - name: Uploading GeoIP2 to artifacts
           azure_rm_storageblob:
+            state: present
             resource_group: "{{ rg_name }}"
             storage_account_name: "{{ storage_account_name }}"
             container: artifacts
@@ -269,6 +307,7 @@
             batch_upload_dst: "labels/"
             batch_upload_src: "../utils/portal/labels/"
             state: present
+            force: yes
         - name: Unarchive plugins
           unarchive:
             src: "https://sunbirdpublic.blob.core.windows.net/installation/content-plugins.zip"
@@ -285,13 +324,18 @@
             batch_upload_dst: "content-plugins/"
             batch_upload_src: "/tmp/content-plugins/"
             state: present
+            force: yes
           tags:
             - plugins
       tags:
         - storage
+###########################################################################
+# Provide Unique name for container registry
+###########################################################################        
     - name: Creating containier registry
       azure_rm_containerregistry:
-        name: "{{ storage_account_name }}"
+        state: present
+        name: "sbinstallation41"
         location: "{{ location }}"
         resource_group: "{{ rg_name }}"
         admin_user_enabled: true
@@ -299,10 +343,10 @@
         tags:
           Environment: installation
     - name: Get instance of Registry
-      azure_rm_containerregistry_info:
+      azure_rm_containerregistry_info :
         resource_group: "{{ rg_name }}"
         retrieve_credentials: true
-        name: "{{ storage_account_name }}"
+        name: "sbinstallation40"
       register: registry
       tags:
         - info

@@ -1,12 +1,12 @@
 # This value will help to scrape external configs,
 # which your prometheus have to watch
 scrapeconfig: []
-  # - job_name: 'Druid'
-  #   metrics_path: /metrics/druid
-  #   static_configs:
-  #     - targets: ["11.2.4.31:9000"]
-  #       labels:
-  #         "service_name": "druid"
+# - job_name: 'Druid'
+#   metrics_path: /metrics/druid
+#   static_configs:
+#     - targets: ["11.2.4.31:9000"]
+#       labels:
+#         "service_name": "druid"
 fullnameOverride: "sunbird-monitoring"
 
 #######################
@@ -27,7 +27,11 @@ fullnameOverride: "sunbird-monitoring"
 #       - 10.10.10.2
 #       - 10.10.10.3
 #       - 10.10.10.4
+
+
 services: {}
+
+
 
 namespace: "default"
 

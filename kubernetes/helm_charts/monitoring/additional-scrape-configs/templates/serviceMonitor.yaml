@@ -28,36 +28,36 @@ subsets:
   - name: app
     port: {{ .port }}
 ---
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: {{ $k }}-external
-  namespace: {{ $.Values.namespace }}
-  labels:
-    release: prometheus-operator
-    app: {{ $k }}-external
-spec:
-  endpoints:
-  -
-    interval: {{ $.Values.scrapeInterval }}
-    path: {{ $.Values.scrapePath }}
-    port: app
-    scheme: http
-    scrapeTimeout: {{ $.Values.scrapeTimeout }}
-    relabelings:
-      - sourceLabels: [__address__]
-        targetLabel: __param_target
-      - sourceLabels: [__param_target]
-        targetLabel: instance
-      - targetLabel: __address__
-        replacement: {{ $.Values.blackboxExporterUrl }}:{{$.Values.blackboxExporterPort}}
-    params:
-      module:
-        - tcp_connect
-  namespaceSelector:
-    matchNames:
-    - {{ $.Values.namespace }}
-  selector:
-    matchLabels:
-      app: {{ $k }}-external
-{{- end }}
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   name: {{ $k }}-external
+#   namespace: {{ $.Values.namespace }}
+#   labels:
+#     release: prometheus-operator
+#     app: {{ $k }}-external
+# spec:
+#   endpoints:
+#   -
+#     interval: {{ $.Values.scrapeInterval }}
+#     path: {{ $.Values.scrapePath }}
+#     port: app
+#     scheme: http
+#     scrapeTimeout: {{ $.Values.scrapeTimeout }}
+#     relabelings:
+#       - sourceLabels: [__address__]
+#         targetLabel: __param_target
+#       - sourceLabels: [__param_target]
+#         targetLabel: instance
+#       - targetLabel: __address__
+#         replacement: {{ $.Values.blackboxExporterUrl }}:{{$.Values.blackboxExporterPort}}
+#     params:
+#       module:
+#         - tcp_connect
+#   namespaceSelector:
+#     matchNames:
+#     - {{ $.Values.namespace }}
+#   selector:
+#     matchLabels:
+#       app: {{ $k }}-external
+# {{- end }}
